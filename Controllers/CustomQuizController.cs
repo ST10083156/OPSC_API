@@ -1,54 +1,40 @@
-﻿using FirebaseAdmin.Auth;
-using Google.Cloud.Firestore;
-using Microsoft.AspNetCore.Mvc;
-using OPSC_API.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using QuizApp.Models;
+using System.Collections.Generic;
 
-namespace OPSC_API.Controllers
+namespace QuizApp.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class CustomQuizController : Controller
+    [ApiController]
+    public class CustomQuizController : ControllerBase
     {
-        [HttpPost("create-quiz")]
-        public async Task<IActionResult> CreateQuiz([FromBody] Quiz quiz)
+        [HttpPost("CreateQuiz")]
+        public IActionResult CreateQuiz([FromBody] CustomQuiz customQuiz)
         {
-            try
+            if (customQuiz == null)
             {
-                DocumentReference docRef = await FirestoreManager.db.Collection("CustomQuizzes").AddAsync(quiz);
-                return Ok(new { message = "Quiz added successfully", quizId = docRef.Id });
+                return BadRequest("Quiz data is null");
             }
-            catch(Exception e) 
+
+            return Ok(new ApiResponse
             {
-            return BadRequest(e.Message);
-            }
+                Success = true,
+                Message = "Quiz created successfully"
+            });
         }
 
-        [HttpGet("my-quizzes")]
-        public async Task<IActionResult> GetMyQuizzes(string uid)
+        
+        [HttpGet("GetMyQuizzes/{uid}")]
+        public IActionResult GetMyQuizzes(string uid)
         {
-            try
+           
+            var quizzes = new List<CustomQuiz>
             {
-                QuerySnapshot docRef = await FirestoreManager.db.Collection("CustomQuizzes").WhereEqualTo("UserID",uid).GetSnapshotAsync();
+              /*  new CustomQuiz { QuizName = "Sample Quiz", Category = "General" },
+                new CustomQuiz { QuizName = "Another Quiz", Category = "Science" }*/
+            };
 
-                List<CustomQuiz> quizzes = new List<CustomQuiz>();
-
-                foreach(DocumentSnapshot doc in docRef.Documents)
-                {
-                    if (doc.Exists)
-                    {
-                        CustomQuiz customQuiz = doc.ConvertTo<CustomQuiz>();
-
-                        quizzes.Add(customQuiz);
-                    }
-                   
-                }
-                return Ok(quizzes);
-
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(quizzes);
         }
     }
 }

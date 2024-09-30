@@ -9,9 +9,9 @@ namespace OPSC_API.Models
         public string QuizID { get; set; }
 
         [FirestoreProperty]
-        public string Category {  get; set; }
+        public string Category { get; set; }
 
         [FirestoreProperty]
-        public Question[] Questions { get; set; }
+        public Question[] Questions { get; set; } 
     }
 }

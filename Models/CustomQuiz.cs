@@ -1,19 +1,14 @@
-﻿using Google.Cloud.Firestore;
+﻿using OPSC_API.Models;
+using System.Collections.Generic;
 
-namespace OPSC_API.Models
+namespace QuizApp.Models
 {
-    [FirestoreData]
+
     public class CustomQuiz
     {
-        [FirestoreProperty]
-        public string QuizID { get; set; }
-        [FirestoreProperty]
-        public string UserID { get; set;}
-
-        [FirestoreProperty]
+        public string QuizName { get; set; }
         public string Category { get; set; }
-
-        [FirestoreProperty]
-        public Question[] Questions { get; set; }
+        public List<Question> Questions { get; set; }
+        public string UserID { get; set; }
     }
 }
